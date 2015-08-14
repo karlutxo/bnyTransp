@@ -41,7 +41,7 @@ public class WebActivity extends ActionBarActivity {
         mPbar = (ProgressBar) findViewById(R.id.progressBar);
 //        myWebView.getSettings().setLoadWithOverviewMode(true);
 //        myWebView.getSettings().setUseWideViewPort(true);
-        myWebView.loadUrl("http://lpa2.bonny.eu/frtd1500/WL4.transp");
+        myWebView.loadUrl("http://lpa2.b****.eu/frtd1500/WL4.transp");
     }
 
 
