@@ -11,11 +11,19 @@ import android.view.View;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
 import android.widget.ProgressBar;
+import android.widget.Toast;
+
+
+// TODO: probar injection código para saltar ffww
+//http://www.techrepublic.com/article/pro-tip-inject-javascript-into-an-android-web-view-for-a-more-dynamic-ux/
 
 public class WebActivity extends ActionBarActivity {
 
     private WebView myWebView;
     private ProgressBar mPbar = null;
+    private String server1 = "http://l**6.b****.eu:8888/t/wl4.transp";
+    private String server2 = "http://l**2.b****.eu/frtd1500/WL4.transp";
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -34,6 +42,12 @@ public class WebActivity extends ActionBarActivity {
                 Log.i("BNYGPS", "oculta pbar");
                 mPbar.setVisibility(View.GONE);
             }
+
+            public void onReceivedError(WebView view, int errorCode, String description, String failingUrl) {
+                Toast.makeText(getApplicationContext(), "Fallo servidor principal, conectando serv alternativo", Toast.LENGTH_SHORT).show();
+                myWebView.loadUrl(server2);
+
+            }
         });
 
         myWebView.getSettings().setBuiltInZoomControls(true);
@@ -41,9 +55,25 @@ public class WebActivity extends ActionBarActivity {
         mPbar = (ProgressBar) findViewById(R.id.progressBar);
 //        myWebView.getSettings().setLoadWithOverviewMode(true);
 //        myWebView.getSettings().setUseWideViewPort(true);
-        myWebView.loadUrl("http://lpa2.b****.eu/frtd1500/WL4.transp");
+        if (savedInstanceState == null) {
+            myWebView.loadUrl(server1);
+        }
     }
 
+
+    @Override
+    protected void onSaveInstanceState(Bundle outState )
+    {
+        super.onSaveInstanceState(outState);
+        myWebView.saveState(outState);
+    }
+
+    @Override
+    protected void onRestoreInstanceState(Bundle savedInstanceState)
+    {
+        super.onRestoreInstanceState(savedInstanceState);
+        myWebView.restoreState(savedInstanceState);
+    }
 
     @Override
     public void onBackPressed() {
