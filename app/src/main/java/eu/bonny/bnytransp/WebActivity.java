@@ -14,7 +14,7 @@ import android.widget.ProgressBar;
 import android.widget.Toast;
 
 
-// TODO: probar injection código para saltar ffww
+// TODO: probar injection cï¿½digo para saltar ffww
 //http://www.techrepublic.com/article/pro-tip-inject-javascript-into-an-android-web-view-for-a-more-dynamic-ux/
 
 public class WebActivity extends ActionBarActivity {
@@ -23,6 +23,8 @@ public class WebActivity extends ActionBarActivity {
     private ProgressBar mPbar = null;
     private String server1 = "http://l**6.b****.eu:8888/t/wl4.transp";
     private String server2 = "http://l**2.b****.eu/frtd1500/WL4.transp";
+    private String user="*****";
+    private String pwd="*****";
 
 
     @Override
@@ -30,6 +32,17 @@ public class WebActivity extends ActionBarActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.webactivity_layout);
         myWebView = (WebView) findViewById(R.id.webView);
+
+        myWebView.getSettings().setBuiltInZoomControls(false);
+        myWebView.getSettings().setJavaScriptEnabled(true);
+        mPbar = (ProgressBar) findViewById(R.id.progressBar);
+//        myWebView.getSettings().setLoadWithOverviewMode(true);
+//        myWebView.getSettings().setUseWideViewPort(true);
+        if (savedInstanceState == null) {
+            myWebView.loadUrl(server1);
+            myWebView.getSettings().setDomStorageEnabled(true);
+            myWebView.setWebContentsDebuggingEnabled(true);
+        }
 
         myWebView.setWebViewClient(new WebViewClient(){
             public void onPageStarted(WebView view, String url, Bitmap favicon) {
@@ -41,25 +54,25 @@ public class WebActivity extends ActionBarActivity {
             {
                 Log.i("BNYGPS", "oculta pbar");
                 mPbar.setVisibility(View.GONE);
+
+//                Toast.makeText(getApplicationContext(), "javascript", Toast.LENGTH_LONG).show();
+//                view.loadUrl("javascript:console.log(document.body.innerHTML);" +
+                        view.loadUrl("javascript:console.log('inicio js');" +
+                        "document.forms[0].Username.value = '"+user+"';" +
+                        "document.forms[0].Password.value = '"+pwd+"';" +
+                        "document.forms[0].submit();" +
+//                      "javascript:console.log(document.body.innerHTML);"
+                        "console.log('fin js');"
+                );
+
             }
 
             public void onReceivedError(WebView view, int errorCode, String description, String failingUrl) {
                 Toast.makeText(getApplicationContext(), "Fallo servidor principal, conectando serv alternativo", Toast.LENGTH_SHORT).show();
                 myWebView.loadUrl(server2);
-
             }
         });
-
-        myWebView.getSettings().setBuiltInZoomControls(true);
-        myWebView.getSettings().setJavaScriptEnabled(true);
-        mPbar = (ProgressBar) findViewById(R.id.progressBar);
-//        myWebView.getSettings().setLoadWithOverviewMode(true);
-//        myWebView.getSettings().setUseWideViewPort(true);
-        if (savedInstanceState == null) {
-            myWebView.loadUrl(server1);
-        }
     }
-
 
     @Override
     protected void onSaveInstanceState(Bundle outState )
